@@ -108,7 +108,7 @@ class UdpReplicator implements Closeable {
 
         final InetSocketAddress address = new InetSocketAddress(udpReplicatorBuilder.broadcastAddress(), udpReplicatorBuilder.port());
         pendingRegistrations = new ConcurrentLinkedQueue<SelectableChannel>();
-        Details connectionDetails = new Details(address, pendingRegistrations, closeables, 0, localIdentifier);
+        Details connectionDetails = new Details(address, closeables, 0, localIdentifier, pendingRegistrations);
         serverConnector = new ServerConnector(connectionDetails);
 
         executorService = newSingleThreadExecutor(new NamedThreadFactory("UdpReplicator-" + localIdentifier, true));
@@ -452,7 +452,7 @@ class UdpReplicator implements Closeable {
             this.details = connectionDetails;
         }
 
-        SelectableChannel connect() throws
+        SelectableChannel connect(final byte identifier) throws
                 IOException, InterruptedException {
             final DatagramChannel server = DatagramChannel.open();
 
